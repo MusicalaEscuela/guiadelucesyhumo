@@ -65,6 +65,7 @@ const checklistItems = {
     'Confirmé que el espacio está despejado y sin cables atravesando zonas de movimiento.',
     'Verifiqué que las luces estén firmes, estables y lejos de materiales inflamables.',
     'Revisé que la consola esté conectada, encendida y sin botón Blackout activo.',
+    'Si la actividad ya tiene escenas preconfiguradas, confirmé el banco y número de escena que debo usar.',
     'Confirmé que las luces estén en modo DMX si se controlarán desde consola.',
     'Validé que la máquina de humo tenga líquido adecuado y autorización de uso.',
     'Revisé ventilación y posibles sensibilidades respiratorias del grupo.',
@@ -83,7 +84,7 @@ const checklistItems = {
 
 const quickModules = [
   { icon: '💡', title: 'Luces DMX', text: 'Aprende direcciones, modos, conexión en cadena y pruebas básicas.' , view: 'luces'},
-  { icon: '🎛️', title: 'Consola', text: 'Identifica faders, blackout, escenas, master, speed y lo que no deberías tocar.' , view: 'consola'},
+  { icon: '🎛️', title: 'Consola', text: 'Identifica cada botón, cómo encenderla y cómo usar escenas preconfiguradas sin reprogramar medio planeta.' , view: 'consola'},
   { icon: '🌫️', title: 'Humo', text: 'Uso seguro, calentamiento, ráfagas cortas, ventilación y restricciones.' , view: 'humo'},
   { icon: '🧪', title: 'Quiz', text: 'Valida que el docente entendió lo básico antes de usar equipos.' , view: 'quiz'}
 ];
@@ -117,7 +118,7 @@ const montajeData = {
     objetivo: 'Crear ambiente escénico sencillo y controlado.',
     pasos: [
       ['Checklist previo', 'Completar revisión de corriente, luces, consola, humo y seguridad.'],
-      ['Activar escena base', 'Usar escena Musicala preconfigurada o color estático seguro.'],
+      ['Activar escena base', 'Si la actividad ya tiene escena guardada, usar el banco y la escena indicada. Si no, usar escena Musicala preconfigurada o color estático seguro.'],
       ['Operar cambios simples', 'Master, blackout controlado y cambios suaves. Nada de improvisar secuencias raras.'],
       ['Cierre documentado', 'Tomar nota de fallas y dejar reporte si algo no respondió.']
     ]
@@ -128,7 +129,7 @@ const montajeData = {
     objetivo: 'Montaje autorizado, seguro y coherente con la puesta en escena.',
     pasos: [
       ['Confirmar responsable', 'Debe haber una persona encargada de luces y humo. No “entre todos miramos”, esa frase ya ha causado suficientes desgracias.'],
-      ['Validar escenas', 'Usar solo escenas aprobadas para el evento.'],
+      ['Validar escenas', 'Usar solo escenas aprobadas para el evento. Confirmar antes banco, número de escena y responsable de operación.'],
       ['Humo con autorización', 'Ráfagas cortas, ventilación y nunca directo a niños, público, instrumentos o sensores.'],
       ['Plan B', 'Tener escena fija clara por si la consola, el cable o la voluntad del universo fallan.']
     ]
@@ -218,6 +219,7 @@ const protocolos = [
       <ol>
         <li>Encender consola y verificar master/faders en nivel bajo antes de subir luz.</li>
         <li>Desactivar Blackout si se requiere salida de luz.</li>
+        <li>Si la actividad tiene escenas preconfiguradas, seleccionar el banco indicado y activar únicamente la escena autorizada.</li>
         <li>Usar escenas básicas o configuraciones autorizadas.</li>
         <li>No grabar, borrar ni reprogramar escenas sin autorización.</li>
         <li>Al cerrar, bajar faders y apagar en orden.</li>
@@ -270,7 +272,7 @@ function renderInicio() {
         <h2>Luces, consola y humo sin convertir Musicala en reactor nuclear.</h2>
         <p>
           Esta app guía a docentes en el uso básico de luces DMX, consola y máquina de humo: pasos, seguridad,
-          montajes rápidos, simulador, quiz y reportes de fallas. Todo muy humano, lo cual explica por qué hay que repetir lo de no tocar botones raros.
+          montajes rápidos, escenas preconfiguradas, simulador, quiz y reportes de fallas. Todo muy humano, lo cual explica por qué hay que repetir lo de no tocar botones raros.
         </p>
         <div class="hero-actions">
           <button class="btn" data-go="antes">Empezar capacitación</button>
@@ -417,34 +419,94 @@ function renderLuces() {
 }
 
 function renderConsola() {
-  const parts = [
-    ['Master', 'Control general de salida. Si está abajo, casi nada saldrá aunque los otros faders estén arriba.'],
-    ['Blackout', 'Apaga temporalmente la salida de luz. Revisarlo primero si todo está oscuro.'],
-    ['Faders', 'Deslizadores para controlar canales: intensidad, color, movimiento, estrobo o efectos según la luz.'],
-    ['Fixture / Scanner', 'Selecciona qué luz o grupo de luces controla la consola.'],
-    ['Scene', 'Escenas guardadas. Usar solo las aprobadas por coordinación.'],
-    ['Chase', 'Secuencias automáticas de escenas. Útiles, pero peligrosas en manos de dedos curiosos.'],
-    ['Speed', 'Velocidad de secuencias o efectos.'],
-    ['Fade Time', 'Tiempo de transición entre una escena y otra.'],
-    ['Program / Record / Delete', 'Zona delicada: no tocar sin autorización. Aquí se rompen cosas que luego nadie acepta haber roto.']
+  const consoleControls = [
+    ['Scanner / Fixture 1–12', 'Seleccionan la luz o grupo de luces que vas a controlar manualmente. En muchas consolas tipo DMX 192, cada botón controla un bloque de 16 canales: Scanner 1 = 001–016, Scanner 2 = 017–032, y así. Para escenas ya guardadas normalmente no hace falta tocarlos.'],
+    ['Faders 1–16', 'Son los deslizadores de canales. Según la luz, pueden manejar dimmer, rojo, verde, azul, blanco, estrobo, programas internos, movimiento o velocidad. No todos hacen lo mismo en todas las luces, porque aparentemente la humanidad decidió que estandarizar era demasiado sensato.'],
+    ['Scene 1–8', 'Activa escenas guardadas dentro del banco actual. Una escena es una “foto” de cómo quedaron las luces: color, intensidad, efecto y posición si aplica. Estos son los botones clave para actividades con escenas preconfiguradas.'],
+    ['Bank Up / Bank Down', 'Cambia el banco de escenas. Cada banco suele tener 8 escenas. El banco activo aparece en la pantalla. Si coordinación dice “Banco 2, Escena 3”, primero buscas el banco 2 y luego oprimes Scene 3. Alta tecnología, básicamente un cajón con pestañas.'],
+    ['Chase 1–6', 'Activa secuencias automáticas que van pasando por varias escenas. Úsalos solo si ya están autorizados para una muestra o evento. En clase normal pueden convertirse en discoteca accidental.'],
+    ['Speed', 'Controla la velocidad de los chases o efectos automáticos. No afecta todas las escenas estáticas. Si algo está cambiando muy rápido, baja Speed antes de culpar a Mercurio retrógrado.'],
+    ['Fade Time', 'Controla qué tan suave o rápido cambia de una escena a otra. Bajo = cambio seco; alto = transición lenta. Para presentaciones suele verse mejor con cambios suaves.'],
+    ['Blackout', 'Apaga temporalmente la salida de luz desde la consola. Si todo está oscuro pero los equipos están encendidos, revisa este botón primero. Es el villano más común y ni siquiera cobra nómina.'],
+    ['Program', 'Entra o sale del modo de programación. No se usa para operar escenas ya guardadas. Si lo oprimes sin saber, puedes terminar editando cosas que nadie quería editar. Qué sorpresa.'],
+    ['MIDI / Add', 'Función avanzada. En programación puede servir para agregar o grabar pasos/escenas según el modelo. En uso docente normal: no tocar.'],
+    ['Auto / Del', 'Puede activar modo automático o borrar elementos cuando estás programando. Ese “Del” no está ahí decorando. No tocar sin autorización.'],
+    ['Music / Bank Copy', 'Puede hacer que las luces respondan al sonido o copiar bancos en modo programación. Útil para técnicos, peligroso para dedos con exceso de confianza.'],
+    ['Tap Sync / Display', 'Permite marcar tempo manualmente o cambiar información de pantalla según el modo. Para operar escenas fijas casi nunca hace falta.'],
+    ['Pantalla', 'Muestra banco, escena, chase, modo o valores. Antes de decir “no sirve”, mira si aparece Blackout, Program, Auto, Music o el banco equivocado.']
   ];
+
+  const addressRows = Array.from({ length: 12 }, (_, i) => {
+    const start = (i * 16) + 1;
+    const end = start + 15;
+    return [`Scanner ${i + 1}`, `${String(start).padStart(3, '0')}–${String(end).padStart(3, '0')}`, `Dirección inicial sugerida: ${String(start).padStart(3, '0')}`];
+  });
+
   return `
-    <div class="callout danger"><strong>No tocar sin autorización:</strong> Program, Record, Delete, Patch, Reset, configuración avanzada o direcciones DMX generales.</div>
-    <div class="section-title"><div><h2>Partes de la consola</h2><p>Un mapa para no jugar a “oprimí algo y ahora nada funciona”.</p></div></div>
-    <div class="grid three">
-      ${parts.map(([h,p]) => `<article class="card"><h3>${h}</h3><p>${p}</p></article>`).join('')}
+    <div class="callout good">
+      <strong>Sobre esta consola:</strong> aunque no sea marca Steren, si se parece a la foto funciona como una consola DMX tipo 192: botones de Scanner/Fixture, escenas, bancos, chases, faders, Speed, Fade Time y Blackout.
+    </div>
+    <div class="callout warning">
+      <strong>Escenas preconfiguradas:</strong> la consola ya puede tener escenas guardadas para actividades de Musicala. En ese caso el docente no debe programar, grabar ni borrar nada: solo prender, escoger banco/escena y cerrar bien.
+    </div>
+    <div class="callout danger"><strong>No tocar sin autorización:</strong> Program, Record/Add, Delete, Patch, Reset, configuración avanzada, direcciones DMX generales o cualquier función que suene a “yo solo estaba mirando”.</div>
+
+    <div class="section-title"><div><h2>Mapa rápido de la consola</h2><p>La foto mental para saber dónde está cada cosa sin jugar ruleta rusa con botones.</p></div></div>
+    <div class="mini-console" aria-label="Mapa visual de consola DMX">
+      <div class="console-row faders"><span>Faders 1–16</span><small>Canales manuales de la luz seleccionada</small></div>
+      <div class="console-row split">
+        <span>Scene 1–8</span>
+        <span>Bank Up / Down</span>
+        <span>Display</span>
+        <span>Speed / Fade Time</span>
+      </div>
+      <div class="console-row split">
+        <span>Scanner 1–12</span>
+        <span>Chase 1–6</span>
+        <span>Program / Add / Del</span>
+        <span>Blackout</span>
+      </div>
     </div>
 
-    <div class="section-title"><div><h2>Encendido básico</h2><p>La secuencia sana para iniciar.</p></div></div>
+    <div class="section-title"><div><h2>Cómo prender y usar escenas ya guardadas</h2><p>Este es el flujo docente. Nada de reprogramar por deporte, gracias por tanto.</p></div></div>
     <div class="step-list">
       ${[
-        ['Todo abajo', 'Antes de encender, deja master y faders abajo para evitar flashazos.'],
-        ['Encender consola', 'Conecta y enciende la consola. Espera a que cargue si aplica.'],
-        ['Encender luces', 'Conecta y enciende luces. Verifica modo DMX.'],
-        ['Desactivar Blackout', 'Si necesitas salida de luz, Blackout debe estar desactivado.'],
-        ['Subir master', 'Sube master suavemente y luego prueba canales o escena.'],
-        ['Usar escena autorizada', 'Para clases o eventos, usar escena básica o predefinida. No programar en vivo sin saber. Qué concepto tan revolucionario.']
+        ['1. Deja controles seguros', 'Antes de encender, deja faders abajo si estaban movidos. Si el modelo tiene master, también abajo. Si no tiene master físico, no pasa nada: esta consola trabaja por canales y escenas.'],
+        ['2. Enciende consola y luces', 'Conecta la consola a corriente, enciéndela si tiene switch y luego enciende las luces. Verifica que las luces estén en modo DMX, no Auto, Sound o Demo.'],
+        ['3. Revisa Blackout', 'Si Blackout está activo, la consola puede estar enviando “negro”. Oprime Blackout una vez para desactivarlo antes de probar la escena.'],
+        ['4. Busca el banco indicado', 'Usa Bank Up / Bank Down hasta llegar al banco que corresponde a la actividad. Ejemplo: Banco 1 para clase, Banco 2 para muestra, Banco 3 para evento. El número real debe definirlo Musicala según cómo quede programada la consola.'],
+        ['5. Activa la escena', 'Oprime Scene 1–8 según la actividad. Si coordinación dijo “Banco 2, Escena 4”, ese es el camino. No necesitas mover faders ni seleccionar scanners para una escena ya guardada.'],
+        ['6. Ajusta solo lo permitido', 'Si la escena es fija, no toques Speed ni Fade. Si es un chase autorizado, puedes ajustar Speed/Fade suavemente. Nada de cambios extremos en clase.'],
+        ['7. Apaga temporalmente si hace falta', 'Para dejar todo oscuro durante una entrada o pausa, usa Blackout. Para volver, desactívalo o vuelve a oprimir la escena indicada, según responda el montaje.'],
+        ['8. Cierre', 'Al terminar: Blackout si aplica, faders abajo, apagar luces y consola según el orden acordado, organizar cables y reportar cualquier cosa rara. Sí, “olía raro” cuenta.']
       ].map(([h,p]) => `<div class="step"><h4>${h}</h4><p>${p}</p></div>`).join('')}
+    </div>
+
+    <div class="section-title"><div><h2>Botón por botón</h2><p>Qué hace cada zona de esta consola tipo DMX 192.</p></div></div>
+    <div class="control-grid">
+      ${consoleControls.map(([h,p]) => `<article class="control-card"><h3>${h}</h3><p>${p}</p></article>`).join('')}
+    </div>
+
+    <div class="section-title"><div><h2>Scanner y direcciones DMX</h2><p>Solo para entender la lógica. Para usar escenas guardadas, esto no debería tocarse.</p></div></div>
+    <div class="card">
+      <p>En este tipo de consola, cada botón Scanner/Fixture suele manejar 16 canales DMX. Por eso, si se quieren controlar luces por separado, normalmente se asignan direcciones saltando de 16 en 16. Si varias luces están en la misma dirección, responderán igual.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Botón</th><th>Canales que controla</th><th>Uso típico</th></tr></thead>
+          <tbody>
+            ${addressRows.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-title"><div><h2>Escenas de actividad</h2><p>Cómo decidir qué tocar según el caso real.</p></div></div>
+    <div class="grid three">
+      ${[
+        ['Actividad con escena asignada', 'Usa exactamente el banco y la escena indicados. Ejemplo: Banco 1 / Escena 1. No selecciones Scanner, no muevas faders, no entres a Program.'],
+        ['Actividad sin escena asignada', 'Usa una escena base aprobada o pide a coordinación el banco correcto. Si no hay claridad, mejor luz fija segura que show improvisado con trauma visual.'],
+        ['Algo no responde', 'Revisa corriente, modo DMX, cable DMX IN/OUT, Blackout, banco correcto y que la escena sí exista. Después reporta, no “arregles” grabando encima.']
+      ].map(([h,p]) => `<article class="card"><h3>${h}</h3><p>${p}</p></article>`).join('')}
     </div>
   `;
 }
@@ -626,7 +688,7 @@ function renderProtocolos() {
         <li>Definir montaje: clase, ensayo, muestra, evento o emergencia.</li>
         <li>Confirmar corriente y estabilidad física de equipos.</li>
         <li>Verificar modo DMX, direcciones y cableado.</li>
-        <li>Operar únicamente escenas o controles autorizados.</li>
+        <li>Operar únicamente escenas preconfiguradas, escenas autorizadas o controles básicos indicados por coordinación.</li>
         <li>Usar humo solo con autorización, ventilación y ráfagas cortas.</li>
         <li>Completar checklist de cierre.</li>
         <li>Reportar fallas el mismo día.</li>
@@ -770,8 +832,17 @@ $$('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigate(btn.d
 $('#menuToggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => null);
+  window.addEventListener('load', async () => {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      registrations.forEach(registration => registration.unregister());
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        keys.forEach(key => caches.delete(key));
+      }
+    } catch {
+      // Limpieza silenciosa: esta versión ya no funciona como PWA.
+    }
   });
 }
 

@@ -474,3 +474,74 @@ th { color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing
   .card, .callout, .form-card { box-shadow: none; background: white; color: black; border: 1px solid #ddd; }
   .card p, .card li, .callout { color: #222; }
 }
+
+
+/* Mapa y explicación de consola DMX */
+.mini-console {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.16);
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.045));
+  box-shadow: var(--shadow);
+}
+.console-row {
+  display: grid;
+  place-items: center;
+  min-height: 58px;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.075);
+  color: white;
+  font-weight: 900;
+  text-align: center;
+}
+.console-row small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.console-row.split {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  min-height: 0;
+}
+.console-row.split span {
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  padding: 10px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.075);
+  color: var(--muted);
+}
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.control-card {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.075);
+}
+.control-card h3 {
+  margin: 0 0 8px;
+  color: white;
+}
+.control-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+@media (max-width: 960px) {
+  .control-grid { grid-template-columns: 1fr; }
+  .console-row.split { grid-template-columns: 1fr 1fr; }
+}

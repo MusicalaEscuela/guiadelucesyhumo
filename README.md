@@ -1,6 +1,6 @@
 # MusiStage - Guía Técnica Musicala
 
-Aplicativo web interno para que docentes aprendan a usar luces DMX, consola de luces y máquina de humo de forma segura.
+Aplicativo web interno para que docentes aprendan a usar luces DMX, consola de luces y máquina de humo de forma segura. Esta versión no usa manifest ni service worker, así que no queda como PWA instalable.
 
 ## Incluye
 
@@ -15,7 +15,7 @@ Aplicativo web interno para que docentes aprendan a usar luces DMX, consola de l
 - Constancia local de capacitación.
 - Reporte local de fallas técnicas.
 - Protocolos imprimibles.
-- PWA instalable y compatible con GitHub Pages.
+- Compatible con GitHub Pages, Firebase Hosting, Netlify o cualquier hosting estático.
 
 ## Cómo usar
 
