@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6d28d9" />
+  <title>MusiStage | Guía Técnica Musicala</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="assets/logo.png" alt="MusiStage" class="brand-icon" />
+        <div>
+          <strong>MusiStage</strong>
+          <span>Guía Técnica Musicala</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <button class="nav-btn active" data-view="inicio">Inicio</button>
+        <button class="nav-btn" data-view="antes">Antes de usar</button>
+        <button class="nav-btn" data-view="luces">Luces DMX</button>
+        <button class="nav-btn" data-view="consola">Consola</button>
+        <button class="nav-btn" data-view="humo">Máquina de humo</button>
+        <button class="nav-btn" data-view="montajes">Montajes rápidos</button>
+        <button class="nav-btn" data-view="simulador">Simulador DMX</button>
+        <button class="nav-btn" data-view="quiz">Quiz docente</button>
+        <button class="nav-btn" data-view="protocolos">Protocolos</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+        <div class="topbar-title">
+          <span class="eyebrow">Capacitación interna</span>
+          <h1 id="pageTitle">MusiStage</h1>
+        </div>
+        <div class="status-pill" id="statusPill">Modo docente</div>
+      </header>
+
+      <section id="content" class="content" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <template id="cardTemplate">
+    <article class="card"></article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
